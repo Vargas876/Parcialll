@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('./templates/header')%>
+<body>
+  <div class="container mt-4">
+    <header>
+      <h1 class="text-center mb-4">Sistema de Gestión de Registros</h1>
+    </header>
+    
+    <div class="card">
+      <div class="card-header">
+        <h2>Filtros de Búsqueda</h2>
+      </div>
+      <div class="card-body">
+        <form method="GET" action="/" class="row g-3">
+          <div class="col-md-4">
+            <label for="departamento" class="form-label">Departamento</label>
+            <select class="form-select" id="departamento" name="departamento">
+              <option value="">Todos los departamentos</option>
+              <% departments.forEach(dept => { %>
+                <option value="<%= dept.code %>" <%= selectedDepartment === dept.code ? 'selected' : '' %>>
+                  <%= dept.name %>
+                </option>
+              <% }); %>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label for="municipio" class="form-label">Municipio</label>
+            <select class="form-select" id="municipio" name="municipio">
+              <option value="">Todos los municipios</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label for="fecha" class="form-label">Fecha</label>
+            <input type="date" class="form-control" id="fecha" name="fecha" value="<%= selectedFecha %>">
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+            <a href="/" class="btn btn-secondary">Limpiar</a>
+            <a href="/new-record" class="btn btn-success">Nuevo Registro</a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card mt-4">
+      <div class="card-header">
+        <h2>Lista de Registros</h2>
+      </div>
+      <div class="card-body">
+        <% if(data.length > 0) { %>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Fecha</th>
+                  <th>Departamento</th>
+                  <th>Municipio</th>
+                  <th>Descripción</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% data.forEach(record => { %>
+                  <tr>
+                    <td><%= record.id %></td>
+                    <td><%= record.fecha %></td>
+                    <td><%= record.departamentoNombre %></td>
+                    <td><%= record.municipioNombre %></td>
+                    <td><%= record.descripcion %></td>
+                    <td>
+                      <form method="POST" action="/delete/<%= record.id %>" style="display: inline;" 
+                            onsubmit="return confirm('¿Está seguro de eliminar este registro?')">
+                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                      </form>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        <% } else { %>
+          <h3 class="text-center">No hay registros</h3>
+        <% } %>
+      </div>
+      <div class="card-footer">
+        <small class="text-muted">Total de registros: <%= data.length %></small>
+      </div>
+    </div>
+
+    <footer class="mt-4">
+      <%- include('./templates/footer')%>
+    </footer>
+  </div>
+
+  <script>
+    // Script para selects dependientes
+    document.getElementById('departamento').addEventListener('change', function() {
+      const departmentCode = this.value;
+      const municipioSelect = document.getElementById('municipio');
+      
+      // Limpiar opciones
+      municipioSelect.innerHTML = '<option value="">Todos los municipios</option>';
+      
+      if (departmentCode) {
+        fetch(`/api/towns/${departmentCode}`)
+          .then(response => response.json())
+          .then(towns => {
+            towns.forEach(town => {
+              const option = document.createElement('option');
+              option.value = town.code;
+              option.textContent = town.name;
+              if (town.code === '<%= selectedMunicipio %>') {
+                option.selected = true;
+              }
+              municipioSelect.appendChild(option);
+            });
+          })
+          .catch(error => console.error('Error:', error));
+      }
+    });
+
+    // Cargar municipios al inicializar si hay departamento seleccionado
+    window.addEventListener('load', function() {
+      const selectedDept = '<%= selectedDepartment %>';
+      if (selectedDept) {
+        document.getElementById('departamento').dispatchEvent(new Event('change'));
+      }
+    });
+  </script>
+</body>
+</html>

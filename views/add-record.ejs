@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('./templates/header')%>
+<body>
+  <div class="container mt-4">
+    <header>
+      <h1 class="text-center mb-4">Nuevo Registro</h1>
+    </header>
+    
+    <div class="card">
+      <div class="card-header">
+        <h2>Adicionar Registro</h2>
+      </div>
+      <div class="card-body">
+        <form action="/" method="post">
+          <div class="mb-3">
+            <label for="fecha" class="form-label">Fecha *</label>
+            <input type="date" class="form-control" id="fecha" name="fecha" required>
+          </div>
+          
+          <div class="mb-3">
+            <label for="departamento" class="form-label">Departamento *</label>
+            <select class="form-select" id="departamento" name="departamento" required>
+              <option value="">Seleccione un departamento</option>
+              <% departments.forEach(dept => { %>
+                <option value="<%= dept.code %>"><%= dept.name %></option>
+              <% }); %>
+            </select>
+          </div>
+          
+          <div class="mb-3">
+            <label for="municipio" class="form-label">Municipio *</label>
+            <select class="form-select" id="municipio" name="municipio" required>
+              <option value="">Primero seleccione un departamento</option>
+            </select>
+          </div>
+          
+          <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <textarea class="form-control" id="descripcion" name="descripcion" rows="3" 
+                      placeholder="Descripción del registro"></textarea>
+          </div>
+          
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <a href="/" class="btn btn-secondary me-md-2">Cancelar</a>
+            <button type="submit" class="btn btn-primary">Guardar Registro</button>
+          </div>
+        </form>
+      </div>
+      <div class="card-footer">
+        <small class="text-muted">* Campos obligatorios</small>
+      </div>
+    </div>
+
+    <footer class="mt-4">
+      <%- include('./templates/footer')%>
+    </footer>
+  </div>
+
+  <script>
+    // Script para selects dependientes en formulario
+    document.getElementById('departamento').addEventListener('change', function() {
+      const departmentCode = this.value;
+      const municipioSelect = document.getElementById('municipio');
+      
+      // Limpiar opciones
+      municipioSelect.innerHTML = '<option value="">Seleccione un municipio</option>';
+      
+      if (departmentCode) {
+        fetch(`/api/towns/${departmentCode}`)
+          .then(response => response.json())
+          .then(towns => {
+            towns.forEach(town => {
+              const option = document.createElement('option');
+              option.value = town.code;
+              option.textContent = town.name;
+              municipioSelect.appendChild(option);
+            });
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('Error al cargar los municipios');
+          });
+      } else {
+        municipioSelect.innerHTML = '<option value="">Primero seleccione un departamento</option>';
+      }
+    });
+
+    // Establecer fecha actual por defecto
+    document.getElementById('fecha').valueAsDate = new Date();
+  </script>
+</body>
+</html>
