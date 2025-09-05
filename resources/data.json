@@ -1,12 +1,5 @@
 [
   {
-    "id": 1,
-    "fecha": "2025-09-01",
-    "departamento": "15",
-    "municipio": "15001",
-    "descripcion": "Registro de ejemplo Tunja"
-  },
-  {
     "id": 2,
     "fecha": "2025-08-15",
     "departamento": "05",
@@ -26,5 +19,26 @@
     "departamento": "27",
     "municipio": "27086",
     "descripcion": "Prueba Ejemplo Belén de Bajirá"
+  },
+  {
+    "id": 5,
+    "fecha": "2025-09-05",
+    "departamento": "23",
+    "municipio": "23464",
+    "descripcion": "Prueba Momil"
+  },
+  {
+    "id": 6,
+    "fecha": "2025-09-18",
+    "departamento": "13",
+    "municipio": "13248",
+    "descripcion": "Prueba El Guamo"
+  },
+  {
+    "id": 7,
+    "fecha": "2025-09-19",
+    "departamento": "41",
+    "municipio": "41349",
+    "descripcion": "Registro Ejemplo Hobo"
   }
 ]
