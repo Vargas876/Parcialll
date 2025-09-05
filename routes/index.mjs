@@ -1,10 +1,7 @@
-// routes/index.mjs
 import express from 'express';
 import fs from 'fs/promises';
 
 const router = express.Router();
-
-// Función para leer archivos JSON
 async function readJSONFile(filePath) {
   try {
     const data = await fs.readFile(filePath, 'utf8');
@@ -15,7 +12,6 @@ async function readJSONFile(filePath) {
   }
 }
 
-// Función para escribir archivos JSON
 async function writeJSONFile(filePath, data) {
   try {
     await fs.writeFile(filePath, JSON.stringify(data, null, 2));
@@ -26,7 +22,6 @@ async function writeJSONFile(filePath, data) {
   }
 }
 
-// GET - Página principal con lista y filtros
 router.get('/', async (req, res) => {
   try {
     const data = await readJSONFile(process.env.DATA_FILE || './resources/data.json');
@@ -34,8 +29,6 @@ router.get('/', async (req, res) => {
     const towns = await readJSONFile(process.env.TOWNS_FILE || './resources/towns.json');
     
     let filteredData = data;
-    
-    // Aplicar filtros si existen
     const { departamento, municipio, fecha } = req.query;
     
     if (departamento) {
@@ -50,7 +43,6 @@ router.get('/', async (req, res) => {
       filteredData = filteredData.filter(item => item.fecha === fecha);
     }
 
-    // Agregar nombres legibles
     filteredData = filteredData.map(item => {
       const dept = departments.find(d => d.code === item.departamento);
       const town = towns.find(t => t.code === item.municipio);
@@ -81,7 +73,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET - Formulario nuevo registro
 router.get('/new-record', async (req, res) => {
   try {
     const departments = await readJSONFile(process.env.DEPARTMENTS_FILE || './resources/departments.json');
@@ -122,7 +113,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-// DELETE - Eliminar registro
 router.post('/delete/:id', async (req, res) => {
   try {
     const id = parseInt(req.params.id);
@@ -142,8 +132,6 @@ router.post('/delete/:id', async (req, res) => {
     res.status(500).send('Error interno del servidor');
   }
 });
-
-// API - Obtener municipios por departamento (para selects dependientes)
 router.get('/api/towns/:departmentCode', async (req, res) => {
   try {
     const departmentCode = req.params.departmentCode;

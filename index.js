@@ -20,5 +20,4 @@ app.use('/', routes)
 
 app.listen(app.get('PORT'), () => {
   console.log(`Server listen at PORT ${app.get('PORT')}`)
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`)
 })

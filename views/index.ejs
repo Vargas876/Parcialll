@@ -95,12 +95,10 @@
   </div>
 
   <script>
-    // Script para selects dependientes
     document.getElementById('departamento').addEventListener('change', function() {
       const departmentCode = this.value;
       const municipioSelect = document.getElementById('municipio');
       
-      // Limpiar opciones
       municipioSelect.innerHTML = '<option value="">Todos los municipios</option>';
       
       if (departmentCode) {
@@ -120,8 +118,6 @@
           .catch(error => console.error('Error:', error));
       }
     });
-
-    // Cargar municipios al inicializar si hay departamento seleccionado
     window.addEventListener('load', function() {
       const selectedDept = '<%= selectedDepartment %>';
       if (selectedDept) {
